@@ -72,7 +72,7 @@ function App() {
       {/* Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-300 ${
         scrolled ? 'bg-white shadow-lg' : 'bg-transparent'
-      }`}>
+      }`} style={{ height: "150px"}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
@@ -298,15 +298,15 @@ function App() {
               <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 lg:p-12">
                 <div className="grid grid-cols-2 gap-6 text-center">
                   <div className="bg-white rounded-lg p-6 shadow-lg">
-                    <div className="text-3xl font-bold text-[#76b445] mb-2">100+</div>
+                    <div className="text-3xl font-bold text-[#76b445] mb-2">21+</div>
                     <div className="text-gray-600">Projects Completed</div>
                   </div>
                   <div className="bg-white rounded-lg p-6 shadow-lg">
-                    <div className="text-3xl font-bold text-black mb-2">50+</div>
+                    <div className="text-3xl font-bold text-black mb-2">10+</div>
                     <div className="text-gray-600">Happy Clients</div>
                   </div>
                   <div className="bg-white rounded-lg p-6 shadow-lg">
-                    <div className="text-3xl font-bold text-[#76b445] mb-2">5+</div>
+                    <div className="text-3xl font-bold text-[#76b445] mb-2">3+</div>
                     <div className="text-gray-600">Years Experience</div>
                   </div>
                   <div className="bg-white rounded-lg p-6 shadow-lg">
@@ -397,22 +397,22 @@ function App() {
                   </div>
                   <div>
                     <h4 className="font-semibold">Email</h4>
-                    <p className="text-gray-300">info@yaksofts.com</p>
+                    <a href= "mailto:info@yaksofts.com"><p className="text-gray-300">info@yaksofts.com</p></a>
                   </div>
                 </div>
               </div>
 
-              {/* <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white">
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="w-12 h-12 bg-black rounded-lg flex items-center justify-center">
                     <Phone className="h-6 w-6" />
                   </div>
                   <div>
                     <h4 className="font-semibold">Phone</h4>
-                    <p className="text-gray-300">+1 (555) 123-4567</p>
+                    <p className="text-gray-300">+91 9988059888 </p>
                   </div>
                 </div>
-              </div> */}
+              </div>
 
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white">
                 <div className="flex items-center space-x-4 mb-4">
@@ -446,7 +446,7 @@ function App() {
               Transforming ideas into powerful applications
             </p>
             <p className="text-gray-500">
-              © 2025 Yak Software Solutions. All rights reserved.
+              © 2026 Yak Software Solutions. All rights reserved.
             </p>
           </div>
         </div>
