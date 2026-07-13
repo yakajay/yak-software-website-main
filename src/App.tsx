@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Code, Smartphone, Globe, Database, Cloud, Users, Mail, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+import { Menu, X, Code, Smartphone, Globe, Database, Cloud, Users, Mail, MapPin, ArrowRight, CheckCircle, Phone } from 'lucide-react';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
