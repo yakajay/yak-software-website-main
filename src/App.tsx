@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Code, Smartphone, Globe, Database, Cloud, Users, Mail, Phone, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
+import { Menu, X, Code, Smartphone, Globe, Database, Cloud, Users, Mail, MapPin, ArrowRight, CheckCircle } from 'lucide-react';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -198,7 +198,7 @@ function App() {
 
         {/* Floating Elements */}
         <div className="absolute bottom-20 right-10 w-32 h-32 bg-gray-600 rounded-full opacity-20 animate-pulse animation-delay-1000"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-[#76b445] rounded-full opacity-20 animate-pulse animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-40 bg-[#76b445] rounded-full opacity-20 animate-pulse animation-delay-2000"></div>
       </section>
 
       {/* Services Section */}
