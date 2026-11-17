@@ -9,6 +9,10 @@ import {
 
 const CONTACT_EMAIL = 'info@yaksofts.com';
 const CAREERS_EMAIL = 'hr@yaksofts.com';
+// Web3Forms access key: delivers enquiries to info@yaksofts.com. It is a public key and
+// safe to ship in the browser. VITE_WEB3FORMS_KEY (e.g. in Vercel) overrides it.
+const WEB3FORMS_KEY: string =
+  (import.meta.env.VITE_WEB3FORMS_KEY as string | undefined) || 'e2b9eef9-20da-4de7-b3fd-a0fa60dd099c';
 const LOGO_DARK = '/yak-logo-dark.png';
 const LOGO_LIGHT = '/yak-logo-light.png';
 
@@ -226,11 +230,29 @@ function App() {
 
     setFormStatus({ state: 'sending' });
     try {
-      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(data),
-      });
+      // Web3Forms when an access key is configured (VITE_WEB3FORMS_KEY), otherwise FormSubmit.
+      const response = WEB3FORMS_KEY
+        ? await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({
+              access_key: WEB3FORMS_KEY,
+              subject: data._subject,
+              from_name: 'Yak Software Website',
+              replyto: data.email,
+              botcheck: Boolean(data._honey),
+              name: data.name,
+              email: data.email,
+              company: data.company,
+              enquiry,
+              message: data.message,
+            }),
+          })
+        : await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(data),
+          });
       const result = await response.json().catch(() => ({ success: false }));
       if (!response.ok || (result.success !== true && result.success !== 'true')) {
         throw new Error((result && result.message) || `Request failed with status ${response.status}`);
