@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PrivacyConsentBanner, PrivacyPolicyModal, readConsent } from './PrivacyConsent';
 import {
   Menu, X, Mail, MapPin, ArrowRight, CheckCircle, Users, UserCheck, Briefcase,
   Building2, Globe2, Layers, Search, ClipboardCheck, Handshake, Rocket,
@@ -192,6 +193,8 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [enquiryType, setEnquiryType] = useState('Hire talent');
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [privacyAgreed, setPrivacyAgreed] = useState(() => readConsent() === 'accepted');
   const [formStatus, setFormStatus] = useState<{ state: 'idle' | 'sending' | 'sent' | 'error'; mailto?: string }>({ state: 'idle' });
 
   useEffect(() => {
@@ -703,6 +706,18 @@ function App() {
                       placeholder="Roles, number of positions, skills, location, duration..."
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#76b445] focus:border-transparent resize-none"></textarea>
                   </div>
+                  <label className="flex items-start gap-3 text-sm text-gray-600 cursor-pointer">
+                    <input type="checkbox" required checked={privacyAgreed}
+                      onChange={(e) => setPrivacyAgreed(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#76b445]" />
+                    <span>
+                      I agree to the{' '}
+                      <button type="button" onClick={() => setPrivacyOpen(true)} className="text-[#5a8a33] font-semibold underline">
+                        Privacy Policy
+                      </button>{' '}
+                      and consent to Yak Software contacting me about this enquiry.
+                    </span>
+                  </label>
                   <input type="text" name="_honey" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
                   <button type="submit" disabled={formStatus.state === 'sending'}
                     className="w-full bg-[#76b445] hover:bg-[#5a8a33] disabled:opacity-60 text-white py-3.5 px-6 rounded-full font-bold transition-colors shadow-lg shadow-[#76b445]/30">
@@ -785,6 +800,7 @@ function App() {
                   </li>
                 ))}
                 <li><button onClick={() => scrollToSection('contact')} className="hover:text-white">Contact</button></li>
+                <li><button onClick={() => setPrivacyOpen(true)} className="hover:text-white">Privacy Policy</button></li>
               </ul>
             </div>
           </div>
@@ -793,6 +809,12 @@ function App() {
           </p>
         </div>
       </footer>
+
+      <PrivacyConsentBanner
+        onOpenPolicy={() => setPrivacyOpen(true)}
+        onChoice={(choice) => setPrivacyAgreed(choice === 'accepted')}
+      />
+      <PrivacyPolicyModal open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
     </div>
   );
 }
