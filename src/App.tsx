@@ -9,8 +9,10 @@ import {
 
 const CONTACT_EMAIL = 'info@yaksofts.com';
 const CAREERS_EMAIL = 'hr@yaksofts.com';
-// Public Web3Forms access key (safe to expose); set in Vercel as VITE_WEB3FORMS_KEY.
-const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined;
+// Web3Forms access key: delivers enquiries to info@yaksofts.com. It is a public key and
+// safe to ship in the browser. VITE_WEB3FORMS_KEY (e.g. in Vercel) overrides it.
+const WEB3FORMS_KEY: string =
+  (import.meta.env.VITE_WEB3FORMS_KEY as string | undefined) || 'e2b9eef9-20da-4de7-b3fd-a0fa60dd099c';
 const LOGO_DARK = '/yak-logo-dark.png';
 const LOGO_LIGHT = '/yak-logo-light.png';
 
