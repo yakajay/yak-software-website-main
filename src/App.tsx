@@ -7,6 +7,11 @@ import {
   ShoppingCart, Factory, Phone as PhoneIcon,
 } from 'lucide-react';
 
+const CONTACT_EMAIL = 'info@yaksofts.com';
+const CAREERS_EMAIL = 'hr@yaksofts.com';
+const LOGO_DARK = '/yak-logo-dark.png';
+const LOGO_LIGHT = '/yak-logo-light.png';
+
 const NAV = [
   { id: 'home', label: 'Home' },
   { id: 'services', label: 'Staffing Services' },
@@ -183,7 +188,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [enquiryType, setEnquiryType] = useState('Hire talent');
-  const logoPath = '/yak-logo.png';
+  const [formStatus, setFormStatus] = useState<{ state: 'idle' | 'sending' | 'sent' | 'error'; mailto?: string }>({ state: 'idle' });
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -205,17 +210,23 @@ function App() {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
+    const enquiry = String(formData.get('enquiry') || 'General');
     const data = {
       name: formData.get('name'),
       email: formData.get('email'),
       company: formData.get('company'),
-      enquiry: formData.get('enquiry'),
-      _subject: `Website enquiry: ${formData.get('enquiry')}`,
+      enquiry,
       message: formData.get('message'),
+      _subject: `Website enquiry: ${enquiry} - ${formData.get('company')}`,
+      _replyto: formData.get('email'),
+      _template: 'table',
+      _captcha: 'false',
+      _honey: formData.get('_honey'),
     };
 
+    setFormStatus({ state: 'sending' });
     try {
-      const response = await fetch('https://formsubmit.co/ajax/info@yaksofts.com', {
+      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(data),
@@ -224,15 +235,20 @@ function App() {
       if (!response.ok || (result.success !== true && result.success !== 'true')) {
         throw new Error((result && result.message) || `Request failed with status ${response.status}`);
       }
-      alert('Thank you! Your enquiry has been submitted. Our team will reach out to you shortly.');
+      setFormStatus({ state: 'sent' });
       form.reset();
       setEnquiryType('Hire talent');
     } catch (error) {
-      console.error('Error sending message', error);
-      alert('There was an error submitting your message. Please try again later or email info@yaksofts.com.');
+      console.error('Contact form error:', error);
+      const body = encodeURIComponent(
+        `Name: ${data.name}\nCompany: ${data.company}\nEnquiry: ${enquiry}\n\n${data.message}`,
+      );
+      setFormStatus({
+        state: 'error',
+        mailto: `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(data._subject)}&body=${body}`,
+      });
     }
   };
-
 
   return (
     <div className="min-h-screen bg-white">
@@ -243,7 +259,7 @@ function App() {
         }`}>
           <div className="flex justify-between items-center py-2">
             <button onClick={() => scrollToSection('home')} className="flex items-center" aria-label="Go to top">
-              <img src={logoPath} alt="Yak Software Solutions logo" className="h-12 md:h-14 w-auto bg-white rounded-xl px-2 py-1 shadow-md" />
+              <img src={scrolled || isMenuOpen ? LOGO_DARK : LOGO_LIGHT} alt="Yak Software Solutions logo" className="h-11 md:h-14 w-auto transition-all duration-300" />
             </button>
 
             <div className="hidden lg:flex items-center gap-1">
@@ -665,10 +681,24 @@ function App() {
                       placeholder="Roles, number of positions, skills, location, duration..."
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#76b445] focus:border-transparent resize-none"></textarea>
                   </div>
-                  <button type="submit"
-                    className="w-full bg-[#76b445] hover:bg-[#5a8a33] text-white py-3.5 px-6 rounded-full font-bold transition-colors shadow-lg shadow-[#76b445]/30">
-                    Submit Enquiry
+                  <input type="text" name="_honey" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
+                  <button type="submit" disabled={formStatus.state === 'sending'}
+                    className="w-full bg-[#76b445] hover:bg-[#5a8a33] disabled:opacity-60 text-white py-3.5 px-6 rounded-full font-bold transition-colors shadow-lg shadow-[#76b445]/30">
+                    {formStatus.state === 'sending' ? 'Sending…' : 'Submit Enquiry'}
                   </button>
+                  {formStatus.state === 'sent' && (
+                    <div role="status" className="flex items-start gap-3 bg-green-50 border border-green-200 text-green-800 rounded-xl p-4">
+                      <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      <span>Thank you! Your enquiry has been sent. Our team will get back to you within one business day.</span>
+                    </div>
+                  )}
+                  {formStatus.state === 'error' && (
+                    <div role="alert" className="bg-red-50 border border-red-200 text-red-800 rounded-xl p-4">
+                      We couldn't send your enquiry right now.{' '}
+                      <a href={formStatus.mailto} className="font-semibold underline">Click here to email it to us instead</a>{' '}
+                      or write to {CONTACT_EMAIL}.
+                    </div>
+                  )}
                 </form>
               </div>
             </div>
@@ -680,7 +710,7 @@ function App() {
                 </div>
                 <div>
                   <h4 className="font-semibold">Email</h4>
-                  <a href="mailto:info@yaksofts.com" className="text-gray-300 hover:text-white">info@yaksofts.com</a>
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-gray-300 hover:text-white">{CONTACT_EMAIL}</a>
                 </div>
               </div>
               <div className="glass rounded-2xl p-6 text-white flex items-center space-x-4">
@@ -695,7 +725,7 @@ function App() {
               <div className="glass rounded-2xl p-6 text-white">
                 <h4 className="font-semibold mb-2">Looking for a job?</h4>
                 <p className="text-gray-300 text-sm">
-                  Send your resume to <a href="mailto:info@yaksofts.com" className="text-[#76b445] hover:underline">info@yaksofts.com</a> with
+                  Send your resume to <a href={`mailto:${CAREERS_EMAIL}`} className="text-[#76b445] hover:underline">{CAREERS_EMAIL}</a> with
                   the role you're interested in.
                 </p>
               </div>
@@ -709,7 +739,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div>
-              <img src={logoPath} alt="Yak Software Solutions logo" className="h-20 w-auto mb-4 bg-white rounded-xl p-1" />
+              <img src={LOGO_LIGHT} alt="Yak Software Solutions logo" className="h-20 w-auto mb-5" />
               <p className="text-gray-400">
                 Staffing and workforce solutions for multinational companies, powered by AJAX-Portal HRMS.
               </p>
